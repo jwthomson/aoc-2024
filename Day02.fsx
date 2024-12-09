@@ -16,8 +16,6 @@ let preProcessing (rawInput: string) =
     |> Array.map (fun raw -> raw.Split(" ", StringSplitOptions.RemoveEmptyEntries) |> Array.map int)
 
 module Part1 =
-    let exampleAnswer = 2
-
     let allDescending xs = xs |> Array.pairwise |> Array.forall (fun (a, b) -> a > b)
     let allAscending xs = xs |> Array.pairwise |> Array.forall (fun (a, b) -> a < b)
     let notTooFast xs = xs |> Array.pairwise |> Array.forall (fun (a, b) -> abs (a - b) <= 3 )
@@ -26,6 +24,7 @@ module Part1 =
     let isSafe (numbers: int array) =
         (notTooFast numbers && notTooSlow numbers) && (allAscending numbers || allDescending numbers)
 
+    let exampleAnswer = 2
     let answer (input: string ) =
         input
         |> preProcessing
@@ -33,8 +32,21 @@ module Part1 =
         |> Array.length
 
 module Part2 =
-    let exampleAnswer = -1
-    let answer (input: string) = 0
+
+    let isSafe (xs: int array) =
+        if Part1.isSafe xs then
+            true
+        else
+            // Ridiculously naive implementation!
+            [| 0 .. xs.Length - 1 |] 
+            |> Array.exists (fun i -> xs |> Array.removeAt i |> Part1.isSafe)
+
+    let exampleAnswer = 4
+    let answer (input: string) =
+        input
+        |> preProcessing
+        |> Array.where isSafe
+        |> Array.length
 
 open Types
 let part1 =
@@ -54,7 +66,5 @@ let part2 =
         ExampleInput = exampleInput
         Solve = Part2.answer
         ExampleAnswer = Part2.exampleAnswer
-        ConfirmedAnswer = None
+        ConfirmedAnswer = Some 308
     }
-
-
