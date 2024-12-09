@@ -1,5 +1,6 @@
-#load "Types.fsx"
+module Day01
 
+open Types
 open System
 
 let exampleInput = 
