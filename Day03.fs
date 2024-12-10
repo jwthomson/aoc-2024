@@ -4,24 +4,18 @@ open Types
 open System.Text.RegularExpressions
 
 module Part1 =
-    let getMuls s =
-        s
-        |> Regex("""mul\((\d+),(\d+)\)""").Matches
-        |> Seq.toArray
-        |> Array.map (fun m -> int m.Groups[1].Value, int m.Groups[2].Value)
-
-    let solver input =
-        input
-        |> getMuls
-        |> Array.sumBy (fun (x,y) -> x * y)
-
-module Part2 =
     let getMulsWithIndex s =
         s
         |> Regex("""mul\((\d+),(\d+)\)""").Matches
         |> Seq.toArray
         |> Array.map (fun m -> int m.Groups[1].Value, int m.Groups[2].Value, m.Groups[0].Index)
 
+    let solver input =
+        input
+        |> getMulsWithIndex
+        |> Array.sumBy (fun (x,y,_) -> x * y)
+
+module Part2 =
     let getDoIndexes s =
         s
         |> Regex("""do\(\)""").Matches
@@ -36,7 +30,7 @@ module Part2 =
 
     let solver input =
         
-        let shouldInclude  (dos: int array) (donts: int array) (index: int) =
+        let shouldInclude (dos: int array) (donts: int array) (index: int) =
             let lastDo =
                 dos
                 |> Array.tryFindBack (fun x -> x < index)
@@ -54,19 +48,9 @@ module Part2 =
         let donts = input |> getDontIndexes |> Array.sort
 
         input
-        |> getMulsWithIndex
+        |> Part1.getMulsWithIndex
         |> Array.choose (fun (a, b, i) -> if shouldInclude dos donts i then Some (a * b) else None)
         |> Array.sum
-
-        (*
-             x   ✔
-        1    -   0 = Some 1
-        28  20   0 = None
-        48  20   0 = None
-        64  20  59 = Some 64
-        
-        *)
-
 
 let part1 = {
     Day = 3
@@ -83,5 +67,5 @@ let part2 = {
         Solver = Part2.solver
         ExampleInput = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
         ExampleAnswer = 48
-        ConfirmedAnswer = None
+        ConfirmedAnswer = Some 77055967
 }
