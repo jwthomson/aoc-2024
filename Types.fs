@@ -5,7 +5,7 @@ type Puzzle = {
     Part: int
     ExampleInput: string
     ExampleAnswer: int
-    Solve: string -> int
+    Solver: string -> int
     ConfirmedAnswer: int option
 }
 
@@ -21,8 +21,9 @@ module Puzzle =
         | Some a ->
             printfn $"%s{desc}: %i{a} ✔"
         | None ->
-            let inputFile = $"Day%02i{puzzle.Day}Input.txt"
-            let input = System.IO.File.ReadAllText inputFile
-            match puzzle.Solve puzzle.ExampleInput with
-            | x when x = puzzle.ExampleAnswer -> printfn $"%s{desc}: %i{puzzle.Solve input}"
+            match puzzle.Solver puzzle.ExampleInput with
+            | x when x = puzzle.ExampleAnswer ->
+                let inputFile = $"Day%02i{puzzle.Day}Input.txt"
+                let input = System.IO.File.ReadAllText inputFile
+                printfn $"%s{desc}: %i{puzzle.Solver input}"
             | x -> printfn $"%s{desc}: Wrong example answer, expected %i{puzzle.ExampleAnswer} but got %i{x}"

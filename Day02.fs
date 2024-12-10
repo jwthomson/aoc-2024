@@ -3,15 +3,6 @@ module Day02
 open Types
 open System
 
-let exampleInput = 
-    """
-    7 6 4 2 1
-    1 2 7 8 9
-    9 7 6 2 1
-    1 3 2 4 5
-    8 6 4 4 1
-    1 3 6 7 9"""
-
 let preProcessing (rawInput: string) =
     rawInput.Split("\n", StringSplitOptions.TrimEntries ||| StringSplitOptions.RemoveEmptyEntries)
     |> Array.map (fun raw -> raw.Split(" ", StringSplitOptions.RemoveEmptyEntries) |> Array.map int)
@@ -25,8 +16,7 @@ module Part1 =
     let isSafe (numbers: int array) =
         (notTooFast numbers && notTooSlow numbers) && (allAscending numbers || allDescending numbers)
 
-    let exampleAnswer = 2
-    let answer (input: string ) =
+    let solver (input: string ) =
         input
         |> preProcessing
         |> Array.where isSafe
@@ -42,30 +32,32 @@ module Part2 =
             [| 0 .. xs.Length - 1 |] 
             |> Array.exists (fun i -> xs |> Array.removeAt i |> Part1.isSafe)
 
-    let exampleAnswer = 4
-    let answer (input: string) =
+    let solver (input: string) =
         input
         |> preProcessing
         |> Array.where isSafe
         |> Array.length
 
 open Types
-let part1 =
-    {
-        Day = 2
-        Part = 1
-        ExampleInput = exampleInput
-        Solve = Part1.answer
-        ExampleAnswer = Part1.exampleAnswer
-        ConfirmedAnswer = Some 236
-    }
+let part1 = {
+    Day = 2
+    Part = 1
+    Solver = Part1.solver
+    ExampleInput = "\
+7 6 4 2 1
+1 2 7 8 9
+9 7 6 2 1
+1 3 2 4 5
+8 6 4 4 1
+1 3 6 7 9"
+    ExampleAnswer = 2
+    ConfirmedAnswer = Some 236
+}
 
-let part2 = 
-    {
-        Day = 2
+let part2 = {
+    part1 with
         Part = 2
-        ExampleInput = exampleInput
-        Solve = Part2.answer
-        ExampleAnswer = Part2.exampleAnswer
+        Solver = Part2.solver
+        ExampleAnswer = 4
         ConfirmedAnswer = Some 308
-    }
+}
